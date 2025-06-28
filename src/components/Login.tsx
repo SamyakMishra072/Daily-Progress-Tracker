@@ -8,48 +8,44 @@ const Login: React.FC = () => {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  const submit = async (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await axios.post(
+      const response = await axios.post(
         `${import.meta.env.VITE_API_URL}/auth/login`,
         { username, password },
-        { withCredentials: true } // send/receive cookie
+        { withCredentials: true }
       );
-      localStorage.setItem('jwt', 'logged-in'); // placeholder flag
-      navigate('/', { replace: true });
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Login failed');
+      localStorage.setItem('token', response.data.token);
+      navigate('/dashboard');
+    } catch (err) {
+      console.error(err);
+      setError('Invalid credentials');
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <form
-        onSubmit={submit}
-        className="p-8 bg-white rounded shadow-md w-full max-w-sm"
-      >
-        <h2 className="text-xl font-bold mb-4">Track Samyak Login</h2>
-        {error && <p className="text-red-500 mb-2">{error}</p>}
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <form onSubmit={handleLogin} className="bg-white p-8 rounded shadow-md w-96 space-y-4">
+        <h2 className="text-2xl font-bold mb-4">Login</h2>
+        {error && <p className="text-red-500">{error}</p>}
         <input
           type="text"
           placeholder="Username"
-          className="w-full mb-3 p-2 border rounded"
           value={username}
           onChange={e => setUsername(e.target.value)}
-          required
+          className="w-full px-3 py-2 border rounded"
         />
         <input
           type="password"
           placeholder="Password"
-          className="w-full mb-3 p-2 border rounded"
           value={password}
           onChange={e => setPassword(e.target.value)}
-          required
+          className="w-full px-3 py-2 border rounded"
         />
         <button
           type="submit"
-          className="w-full bg-blue-600 text-white py-2 rounded"
+          className="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700"
         >
           Login
         </button>
