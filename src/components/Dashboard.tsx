@@ -3,8 +3,11 @@ import { ProgressEntry } from '../types';
 import { useLocalStorage } from '../hooks/useLocalStorage';
 import {
   fetchEntries,
-  createEntry as apiCreateEntry
+  createEntry as apiCreateEntry,
+  updateEntry,
+  deleteEntry
 } from '../utils/api';
+
 import { exportToCSV, calculateStats } from '../utils/export';
 import { mockEntries } from '../data/mockData';
 import SummaryCards from './SummaryCards';
