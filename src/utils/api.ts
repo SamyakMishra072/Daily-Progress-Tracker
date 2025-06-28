@@ -1,6 +1,10 @@
 import axios from 'axios';
 import { ProgressEntry } from '../types';
 
+
+
+
+
 // ✅ Axios instance pointing to your backend
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
