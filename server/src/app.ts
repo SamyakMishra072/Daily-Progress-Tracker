@@ -1,5 +1,8 @@
 import express from 'express';
 import cors from 'cors';
+import cookieParser from 'cookie-parser';
+import authRouter from './routes/auth';
+import { protect } from './controllers/authController';
 import entriesRouter from './routes/entries';
 
 const app = express();
@@ -25,6 +28,10 @@ app.use(cors({
 
 app.use(express.json());
 app.use('/api/entries', entriesRouter);
+app.use(cookieParser());
+app.use('/api/auth', authRouter);
+
+app.use('/api/entries', protect, entriesRouter);
 
 app.get('/', (_req, res) => {
   res.send('🟢 Track Samyak backend is running');
