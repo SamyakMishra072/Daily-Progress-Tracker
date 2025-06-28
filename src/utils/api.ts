@@ -1,102 +1,35 @@
+import axios from 'axios';
 import { ProgressEntry } from '../types';
 
-import axios from 'axios';
-
+// ✅ Axios instance pointing to your backend
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 });
 
-export const fetchEntries = () => API.get('/entries');
-export const createEntry = (data: any) => API.post('/entries', data);
-export const updateEntry = (id: string, data: any) => API.put(`/entries/${id}`, data);
-export const deleteEntry = (id: string) => API.delete(`/entries/${id}`);
+// ✅ GET all progress entries
+export const fetchEntries = async (): Promise<ProgressEntry[]> => {
+  const response = await API.get('/entries');
+  return response.data;
+};
 
-// TODO: Replace with actual API endpoints when backend is ready
-const API_BASE_URL = 'https://api.example.com';
+// ✅ CREATE a new entry
+export const createEntry = async (
+  entry: Omit<ProgressEntry, 'id' | 'createdAt'>
+): Promise<ProgressEntry> => {
+  const response = await API.post('/entries', entry);
+  return response.data;
+};
 
-export const api = {
-  // Create a new progress entry
-  createEntry: async (entry: Omit<ProgressEntry, 'id' | 'createdAt'>): Promise<ProgressEntry> => {
-    try {
-      // Simulate API call
-      const response = await fetch(`${API_BASE_URL}/api/progress`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(entry),
-      });
+// ✅ UPDATE an entry by ID
+export const updateEntry = async (
+  id: string,
+  entry: Partial<ProgressEntry>
+): Promise<ProgressEntry> => {
+  const response = await API.put(`/entries/${id}`, entry);
+  return response.data;
+};
 
-      if (!response.ok) {
-        throw new Error('Failed to create entry');
-      }
-
-      // For now, return mock data since backend isn't ready
-      return {
-        ...entry,
-        id: Date.now().toString(),
-        createdAt: new Date().toISOString(),
-      };
-    } catch (error) {
-      // Simulate successful creation for demo purposes
-      console.log('TODO: Connect to real API endpoint');
-      return {
-        ...entry,
-        id: Date.now().toString(),
-        createdAt: new Date().toISOString(),
-      };
-    }
-  },
-
-  // Get all progress entries
-  getEntries: async (): Promise<ProgressEntry[]> => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/progress`);
-      if (!response.ok) {
-        throw new Error('Failed to fetch entries');
-      }
-      return await response.json();
-    } catch (error) {
-      console.log('TODO: Connect to real API endpoint');
-      return [];
-    }
-  },
-
-  // Update an existing entry
-  updateEntry: async (id: string, entry: Partial<ProgressEntry>): Promise<ProgressEntry> => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/progress/${id}`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(entry),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to update entry');
-      }
-
-      return await response.json();
-    } catch (error) {
-      console.log('TODO: Connect to real API endpoint');
-      throw error;
-    }
-  },
-
-  // Delete an entry
-  deleteEntry: async (id: string): Promise<void> => {
-    try {
-      const response = await fetch(`${API_BASE_URL}/api/progress/${id}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete entry');
-      }
-    } catch (error) {
-      console.log('TODO: Connect to real API endpoint');
-      throw error;
-    }
-  },
+// ✅ DELETE an entry by ID
+export const deleteEntry = async (id: string): Promise<void> => {
+  await API.delete(`/entries/${id}`);
 };
