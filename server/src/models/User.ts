@@ -13,13 +13,12 @@ const userSchema = new Schema<IUser>({
 });
 
 // 🔐 Hash password before saving
-userSchema.pre<IUser>('save', async function (next) {
+userSchema.pre('save', async function (next) {
   if (!this.isModified('password')) return next();
   this.password = await bcrypt.hash(this.password, 12);
   next();
 });
 
-// ✅ Define comparePassword correctly
 userSchema.methods.comparePassword = function (candidate: string) {
   return bcrypt.compare(candidate, this.password);
 };

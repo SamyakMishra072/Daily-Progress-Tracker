@@ -9,20 +9,20 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_API_URL}/auth/login`,
-        { username, password },
-        { withCredentials: true }
-      );
-      localStorage.setItem('token', response.data.token);
-      navigate('/dashboard');
-    } catch (err) {
-      console.error(err);
-      setError('Invalid credentials');
-    }
-  };
+  e.preventDefault();
+  try {
+    const response = await axios.post(
+      `${import.meta.env.VITE_API_URL}/auth/login`,
+      { username, password },
+      { withCredentials: true }
+    );
+    navigate('/dashboard'); // ✅ You're authenticated now via cookie
+  } catch (err) {
+    console.error(err);
+    setError('Invalid credentials');
+  }
+};
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100">
