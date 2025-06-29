@@ -1,15 +1,18 @@
 import { Secret } from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
-import jwt from 'jsonwebtoken';
+import jwt, { Secret } from 'jsonwebtoken';
 import { User } from '../models/User';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const JWT_SECRET = process.env.JWT_SECRET!;
+const JWT_SECRET = process.env.JWT_SECRET as Secret;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1h';
 
-const signToken = (id: string) =>
-  jwt.sign({ id }, JWT_SECRET as Secret, { expiresIn: JWT_EXPIRES_IN });
+
+const signToken = (id: string): string =>
+  jwt.sign({ id }, JWT_SECRET, { expiresIn: JWT_EXPIRES_IN });
+
+
 
 
 export const register = async (req: Request, res: Response) => {
