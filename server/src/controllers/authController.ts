@@ -7,8 +7,14 @@ dotenv.config();
 const JWT_SECRET = process.env.JWT_SECRET || 'fallback-secret';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1h';
 
+// <<< Replace your old signToken with this
 const signToken = (id: string): string =>
-  jwt.sign({ id }, JWT_SECRET as jwt.Secret, { expiresIn: JWT_EXPIRES_IN });
+  (jwt.sign as any)(
+    { id },
+    JWT_SECRET,
+    { expiresIn: JWT_EXPIRES_IN }
+  );
+// >>>
 
 
 export const register = async (req: Request, res: Response) => {
