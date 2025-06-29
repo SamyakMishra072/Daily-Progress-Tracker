@@ -12,22 +12,25 @@ const whitelist = [
   'https://daily-progress-tracker-samyak.vercel.app'
 ];
 
+// 1) Use array‑based origin and credentials:true
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (whitelist.includes(origin)) return callback(null, true);
-    callback(new Error(`CORS policy: Origin ${origin} not allowed`));
-  },
-  credentials: true  // 💡 This is important to allow cookies!
+  origin: whitelist,
+  credentials: true
+}));
+
+// 2) Handle preflight for all routes
+app.options('*', cors({
+  origin: whitelist,
+  credentials: true
 }));
 
 app.use(express.json());
 app.use(cookieParser());
 
-// ✅ Mount Auth routes
+// 3) Mount auth routes (public)
 app.use('/api/auth', authRouter);
 
-// ✅ Protect entries routes properly
+// 4) Protect entries routes
 app.use('/api/entries', protect, entriesRouter);
 
 app.get('/', (_req, res) => {
