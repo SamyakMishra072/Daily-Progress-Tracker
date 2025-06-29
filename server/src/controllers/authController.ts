@@ -33,9 +33,18 @@ export const register = async (req: Request, res: Response) => {
 
 export const login = async (req: Request, res: Response) => {
   const { username, password } = req.body;
+  console.log('LOGIN_ATTEMPT:', { username });
+
   const user = await User.findOne({ username });
 
-  if (!user || !(await user.comparePassword(password))) {
+  if (!user) {
+    console.log('USER_NOT_FOUND');
+    return res.status(401).json({ message: 'Invalid credentials' });
+  }
+
+  const isMatch = await user.comparePassword(password);
+  if (!isMatch) {
+    console.log('PASSWORD_MISMATCH');
     return res.status(401).json({ message: 'Invalid credentials' });
   }
 
@@ -46,8 +55,10 @@ export const login = async (req: Request, res: Response) => {
     sameSite: 'lax',
   });
 
+  console.log('LOGIN_SUCCESS:', user.username);
   res.json({ status: 'success' });
 };
+
 
 export const protect = (req: Request, res: Response, next: NextFunction) => {
   const token = req.cookies.jwt;
